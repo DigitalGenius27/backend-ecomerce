@@ -11,7 +11,7 @@ app.use(cors());
 
 // Conectar a la base de datos
 const dbPromise = open({
-    filename: "../database/database.db",  // Asegúrate de que la ruta es correcta
+    filename: "database/database.db",  // Asegúrate de que la ruta es correcta
     driver: sqlite3.Database
 });
 
