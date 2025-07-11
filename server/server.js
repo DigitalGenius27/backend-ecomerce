@@ -12,7 +12,7 @@ app.use(cors());
 
 // Conectar a la base de datos
 const dbPromise = open({
-    filename: path.join(process.cwd(), "database", "database.db") // Esto busca la carpeta "database" en tu proyecto
+    filename: path.join(process.cwd(), "database", "database.db"), // Esto busca la carpeta "database" en tu proyecto
     driver: sqlite3.Database
 });
 
