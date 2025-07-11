@@ -3,6 +3,7 @@ import cors from "cors";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";  // Asegúrate de importar "open" correctamente
 import paypal from '@paypal/checkout-server-sdk';
+import path from "path";
 
 
 const app = express();
@@ -11,7 +12,7 @@ app.use(cors());
 
 // Conectar a la base de datos
 const dbPromise = open({
-    filename: "https://backend-ecomerce-vl7n.onrender.com/database/database.db",  // Asegúrate de que la ruta es correcta
+    filename: path.join(process.cwd(), "database", "database.db"), // Esto busca la carpeta "database" en tu proyecto
     driver: sqlite3.Database
 });
 
