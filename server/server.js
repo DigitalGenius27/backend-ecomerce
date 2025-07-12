@@ -17,7 +17,7 @@ const dbPromise = open({
 });
 
 dbPromise.then(() => console.log('base de datos abierta'))
-         .catch(err => console.error('error abriendo base de datos:'err))
+         .catch(err => console.error('error abriendo base de datos:',err))
 
 app.get("/reviews", async (req, res) => {
     try {
