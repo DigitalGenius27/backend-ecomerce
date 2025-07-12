@@ -19,6 +19,10 @@ const dbPromise = open({
 dbPromise.then(() => console.log('base de datos abierta'))
          .catch(err => console.error('error abriendo base de datos:',err))
 
+app.get("/", (req, res) => {
+  res.send("API funcionando 🚀");
+});
+
 app.get("/reviews", async (req, res) => {
     try {
         const db = await dbPromise;
@@ -89,4 +93,5 @@ app.put("/productos/cart/:id", async (req, res) => {
     }
 });
   
-  app.listen(5000, () => console.log("🚀 Servidor corriendo en http://localhost:5000"));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`));
