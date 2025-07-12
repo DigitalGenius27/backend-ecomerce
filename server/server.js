@@ -16,6 +16,9 @@ const dbPromise = open({
     driver: sqlite3.Database
 });
 
+dbPromise.then(() => console.log('base de datos abierta'))
+         .catch(err => console.error('error abriendo base de datos:'err))
+
 app.get("/reviews", async (req, res) => {
     try {
         const db = await dbPromise;
