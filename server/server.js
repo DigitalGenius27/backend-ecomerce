@@ -18,8 +18,11 @@ const dbPromise = open({
     driver: sqlite3.Database
 });
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const dbPromise2 = open({
-    filename: "../database/database2.db",
+    filename: path.join(__dirname, "..", "database", "database2.db"),
     driver: sqlite3.Database
 });
 
