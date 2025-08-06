@@ -18,24 +18,30 @@ const dbPromise = open({
     driver: sqlite3.Database
 });
 
+const dbPromise2 = open({
+    filename: "../database/database2.db",
+    driver: sqlite3.Database
+});
+
 app.get("/reviews", async (req, res) => {
     try {
-        const db = await dbPromise;
+        const db = await dbPromise2;
         const reviews = await db.all("SELECT * FROM reviews");
-        const reviewsConImagen = reviews.map((reviews) => {
+
+        const reviewsConImagen = reviews.map((review) => {
             let imagenBase64 = null;
 
-            if (reviews.foto && reviews.foto instanceof Buffer) {
-                const base64 = reviews.foto.toString("base64");
+            if (review.foto && review.foto instanceof Buffer) {
+                const base64 = review.foto.toString("base64");
                 imagenBase64 = `data:image/jpeg;base64,${base64}`;
             }
 
             return {
-                ...reviews,
-                imagen: imagenBase64, // Sobreescribimos la propiedad "imagen"
+                ...review,
+                imagen: imagenBase64,
             };
         });
-        console.log("📝 Reseñas obtenidas:", reviews);  // Ver en consola si realmente obtiene los datos
+
         res.json(reviewsConImagen);
     } catch (error) {
         console.error("❌ Error al obtener reseñas:", error);
@@ -120,7 +126,7 @@ app.put("/productos/cart/:id", async (req, res) => {
 app.get("/banner/foto_banner/:id", async (req,res) => {
     try {
         const { id } = req.params;
-        const db = await dbPromise;
+        const db = await dbPromise2;
         const banner = await db.get("SELECT * FROM banner WHERE id = ?", [id]);
 
         if (!banner) {
@@ -147,7 +153,7 @@ app.get("/banner/foto_banner/:id", async (req,res) => {
 app.get("/perfil/foto_de_perfil/:id", async (req,res) => {
     try {
         const { id } = req.params;
-        const db = await dbPromise;
+        const db = await dbPromise2;
         const perfil = await db.get("SELECT * FROM perfil WHERE id = ?", [id]);
 
         if (!perfil) {
@@ -170,7 +176,7 @@ app.get("/perfil/foto_de_perfil/:id", async (req,res) => {
         res.status(500).json({ error: "Error al obtener perfil" });
     }
 });
+
   
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`));
-
