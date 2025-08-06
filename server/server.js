@@ -8,24 +8,29 @@ import path from "path";
 import { fileURLToPath } from 'url';
 
 
+
 const app = express();
 app.use(express.json());
 app.use(cors());
 
 // Conectar a la base de datos
-const dbPromise = open({
-    filename: "../database/database.db",  // Asegúrate de que la ruta es correcta
-    driver: sqlite3.Database
-});
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dbPromise2 = open({
-    filename: path.join(__dirname, "..", "database", "database2.db"),
-    driver: sqlite3.Database
+// Rutas absolutas para las dos bases
+const dbPath1 = path.join(__dirname, '..', 'database', 'database.db');
+const dbPath2 = path.join(__dirname, '..', 'database', 'database2.db');
+
+// Ahora sí: dbPromise 1 y 2
+export const dbPromise = open({
+  filename: dbPath1,
+  driver: sqlite3.Database
 });
 
+export const dbPromise2 = open({
+  filename: dbPath2,
+  driver: sqlite3.Database
+});
 app.get("/reviews", async (req, res) => {
     try {
         const db = await dbPromise2;
