@@ -11,7 +11,11 @@ import { fileURLToPath } from 'url';
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: "*", // Permitir todas (para pruebas). En producción, pon el dominio exacto.
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type"]
+}));
 
 // Conectar a la base de datos
 const __filename = fileURLToPath(import.meta.url);
