@@ -60,6 +60,7 @@ app.get("/reviews", async (req, res) => {
 });
         res.json(reviewsConImagen);
         console.log("✅ Reviews JSON Preview:", JSON.stringify(reviewsConImagen).slice(0, 500));
+        res.send(String(reviews));
     } catch (error) {
         console.error("❌ Error al obtener reseñas:", error);
         res.status(500).json({ error: "Error al obtener las reseñas" });
@@ -198,3 +199,4 @@ app.get("/perfil/foto_de_perfil/:id", async (req,res) => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`));
+
