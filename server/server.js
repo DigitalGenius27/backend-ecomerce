@@ -11,11 +11,13 @@ import { fileURLToPath } from 'url';
 
 const app = express();
 app.use(express.json());
-app.use(cors({
-    origin: "*", // Permitir todas (para pruebas). En producción, pon el dominio exacto.
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type"]
-}));
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*"); // o usa "http://localhost:3000" si querés limitar
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  next();
+});
+
 
 // Conectar a la base de datos
 const __filename = fileURLToPath(import.meta.url);
@@ -40,21 +42,24 @@ app.get("/reviews", async (req, res) => {
         const db = await dbPromise2;
         const reviews = await db.all("SELECT * FROM reviews");
 
-        const reviewsConImagen = reviews.map((review) => {
-            let imagenBase64 = null;
+       const reviewsConImagen = reviews.map((review) => {
+    let imagenBase64 = null;
+    try {
+        if (review.foto && review.foto instanceof Buffer) {
+            const base64 = review.foto.toString("base64");
+            imagenBase64 = `data:image/jpeg;base64,${base64}`;
+        }
+    } catch (err) {
+        console.error("⚠️ Error al convertir imagen de review:", err.message);
+    }
 
-            if (review.foto && review.foto instanceof Buffer) {
-                const base64 = review.foto.toString("base64");
-                imagenBase64 = `data:image/jpeg;base64,${base64}`;
-            }
-
-            return {
-                ...review,
-                imagen: imagenBase64,
-            };
-        });
-
+    return {
+        ...review,
+        imagen: imagenBase64,
+    };
+});
         res.json(reviewsConImagen);
+        console.log("✅ Reviews JSON Preview:", JSON.stringify(reviewsConImagen).slice(0, 500));
     } catch (error) {
         console.error("❌ Error al obtener reseñas:", error);
         res.status(500).json({ error: "Error al obtener las reseñas" });
@@ -191,4 +196,5 @@ app.get("/perfil/foto_de_perfil/:id", async (req,res) => {
 
   
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`));
