@@ -37,35 +37,37 @@ export const dbPromise2 = open({
   filename: dbPath2,
   driver: sqlite3.Database
 });
+
 app.get("/reviews", async (req, res) => {
     try {
         const db = await dbPromise2;
         const reviews = await db.all("SELECT * FROM reviews");
 
-       const reviewsConImagen = reviews.map((review) => {
-    let imagenBase64 = null;
-    try {
-        if (review.foto && review.foto instanceof Buffer) {
-            const base64 = review.foto.toString("base64");
-            imagenBase64 = `data:image/jpeg;base64,${base64}`;
-        }
-    } catch (err) {
-        console.error("⚠️ Error al convertir imagen de review:", err.message);
-    }
+        const reviewsConImagen = reviews.map((review) => {
+            let imagenBase64 = null;
+            try {
+                if (review.foto && review.foto instanceof Buffer) {
+                    const base64 = review.foto.toString("base64");
+                    imagenBase64 = `data:image/jpeg;base64,${base64}`;
+                }
+            } catch (err) {
+                console.error("⚠️ Error al convertir imagen de review:", err.message);
+            }
 
-    return {
-        ...review,
-        imagen: imagenBase64,
-    };
-});
-        res.json(reviewsConImagen);
+            return {
+                ...review,
+                imagen: imagenBase64,
+            };
+        });
+
+        res.json(reviewsConImagen);  // ✅ Esta es la única respuesta necesaria
         console.log("✅ Reviews JSON Preview:", JSON.stringify(reviewsConImagen).slice(0, 500));
-        res.send(String(reviews));
     } catch (error) {
         console.error("❌ Error al obtener reseñas:", error);
         res.status(500).json({ error: "Error al obtener las reseñas" });
     }
-})
+});
+
 
 // Ruta para obtener productos
 // Ruta para obtener productos
@@ -199,4 +201,5 @@ app.get("/perfil/foto_de_perfil/:id", async (req,res) => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`));
+
 
